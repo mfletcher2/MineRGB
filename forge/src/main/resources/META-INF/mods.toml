@@ -17,20 +17,20 @@ displayURL = "https://github.com/mfletcher2/MineRGB"
 [[dependencies.minergb]]
 modId = "forge"
 mandatory = true
-versionRange = "[47,)"
+versionRange = "[40,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.minergb]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.1,)"
+versionRange = "[1.18.2,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.minergb]]
 modId = "architectury"
 mandatory = true
-versionRange = "[9.2.14,)"
+versionRange = "[4.12.94,)"
 ordering = "AFTER"
 side = "BOTH"
