@@ -6,8 +6,8 @@ import io.gitlab.mguimard.openrgb.entity.DeviceType;
 import io.gitlab.mguimard.openrgb.entity.OpenRGBColor;
 import io.gitlab.mguimard.openrgb.entity.OpenRGBDevice;
 import io.gitlab.mguimard.openrgb.entity.OpenRGBLed;
+import net.minecraft.core.Vec3i;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3i;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -115,8 +115,8 @@ public class MineRGBClientController {
     }
 
     public static void setBackgroundColorFromInt(int color) {
-        Vector3i rgb = BitUtils.getRGB(color);
-        OpenRGBColor rgbColor = new OpenRGBColor(rgb.x / 2, rgb.y / 2, rgb.z / 2);
+        Vec3i rgb = BitUtils.getRGB(color);
+        OpenRGBColor rgbColor = new OpenRGBColor(rgb.getX() / 2, rgb.getY() / 2, rgb.getZ() / 2);
         setBackgroundColor(rgbColor);
     }
 

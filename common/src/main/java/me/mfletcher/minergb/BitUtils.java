@@ -1,9 +1,9 @@
 package me.mfletcher.minergb;
 
-import org.joml.Vector3i;
+import net.minecraft.core.Vec3i;
 
 public class BitUtils {
-    public static Vector3i getRGB(int color) {
-        return new Vector3i((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+    public static Vec3i getRGB(int color) {
+        return new Vec3i((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
     }
 }
