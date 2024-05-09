@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[40,)"
 issueTrackerURL = "https://github.com/mfletcher2/MineRGB/issues"
 license = "GPL-3.0"
 
