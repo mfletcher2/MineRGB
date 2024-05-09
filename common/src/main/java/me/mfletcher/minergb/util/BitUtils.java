@@ -1,4 +1,4 @@
-package me.mfletcher.minergb;
+package me.mfletcher.minergb.util;
 
 import org.joml.Vector3i;
 
