@@ -6,6 +6,7 @@ import io.gitlab.mguimard.openrgb.entity.DeviceType;
 import io.gitlab.mguimard.openrgb.entity.OpenRGBColor;
 import io.gitlab.mguimard.openrgb.entity.OpenRGBDevice;
 import io.gitlab.mguimard.openrgb.entity.OpenRGBLed;
+import me.mfletcher.minergb.util.BitUtils;
 import net.minecraft.core.Vec3i;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -76,35 +77,53 @@ public class MineRGBClientController {
         }
     }
 
-    public static void flashHurt() {
+    public static void updateLeds() {
+        for (int i = 0; i < DEVICES_CACHE.size(); i++) {
+            OpenRGBDevice device = DEVICES_CACHE.get(i);
+            OpenRGBColor[] colors;
+            if (isHurt) colors = HURT_COLOR_CACHE.get(i).clone();
+            else if (collectedXp) colors = XP_COLOR_CACHE.get(i).clone();
+            else colors = BACKGROUND_COLOR_CACHE.get(i).clone();
+            isHurt = false;
+            collectedXp = false;
+            if (device.getType() == DeviceType.DEVICE_TYPE_KEYBOARD) {
+                setKeyColor(Integer.toString(hotbarSlot + 1), KEY_MAP.get(i), new OpenRGBColor(127, 127, 127), colors);
+                setHealthColors(KEY_MAP.get(i), colors);
+                setFoodColors(KEY_MAP.get(i), colors);
+            }
+            updateLeds(i, colors);
+        }
+    }
+
+    public static void updateLeds(int deviceIndex, OpenRGBColor[] colors) {
         try {
-            for (int i = 0; i < CLIENT.getControllerCount(); i++)
-                CLIENT.updateLeds(i, HURT_COLOR_CACHE.get(i));
+            CLIENT.updateLeds(deviceIndex, colors);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void updateLeds() {
-        try {
-            for (int i = 0; i < DEVICES_CACHE.size(); i++) {
-                OpenRGBDevice device = DEVICES_CACHE.get(i);
-                OpenRGBColor[] colors;
-                if(isHurt) colors = HURT_COLOR_CACHE.get(i).clone();
-                else if(collectedXp) colors = XP_COLOR_CACHE.get(i).clone();
-                else colors = BACKGROUND_COLOR_CACHE.get(i).clone();
-                isHurt = false;
-                collectedXp = false;
-                if (device.getType() == DeviceType.DEVICE_TYPE_KEYBOARD) {
-                    setKeyColor(Integer.toString(hotbarSlot + 1), KEY_MAP.get(i), new OpenRGBColor(127, 127, 127), colors);
-                    setHealthColors(KEY_MAP.get(i), colors);
-                    setFoodColors(KEY_MAP.get(i), colors);
+    public static void updateLoading(int progress /* out of 100 */) {
+        for (int i = 0; i < DEVICES_CACHE.size(); i++) {
+            OpenRGBDevice device = DEVICES_CACHE.get(i);
+            if (device.getZones().get(0).getMatrixWidth() == 0) return;
+            int[][] matrix = device.getZones().get(0).getMatrix();
+            OpenRGBColor[] colors = new OpenRGBColor[device.getLeds().size()];
+            progress = (int) Math.round(progress / 100.0 * matrix[0].length);
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (j < progress) {
+                    for (int k = 0; k < matrix.length; k++)
+                        if (matrix[k][j] != -1)
+                            colors[matrix[k][j]] = new OpenRGBColor(0, 255, 0);
+
+                } else {
+                    for (int k = 0; k < matrix.length; k++)
+                        if (matrix[k][j] != -1)
+                            colors[matrix[k][j]] = new OpenRGBColor(0, 0, 0);
                 }
-                CLIENT.updateLeds(i, colors);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            updateLeds(i, colors);
         }
     }
 
@@ -162,7 +181,7 @@ public class MineRGBClientController {
 
         int health = (int) Math.round(healthRatio * 6);
         for (int i = 1; i <= 6; i++)
-            if(health >= i)
+            if (health >= i)
                 setKeyColor("F" + i, keyMap, new OpenRGBColor(127, 0, 0), colorArr);
             else
                 setKeyColor("F" + i, keyMap, new OpenRGBColor(0, 0, 0), colorArr);
@@ -176,7 +195,7 @@ public class MineRGBClientController {
 
         int food = (int) Math.round(foodLevelRatio * 6);
         for (int i = 1; i <= 6; i++)
-            if(food >= i)
+            if (food >= i)
                 setKeyColor("F" + (13 - i), keyMap, OpenRGBColor.fromHexaString("#75481b"), colorArr);
             else
                 setKeyColor("F" + (13 - i), keyMap, new OpenRGBColor(0, 0, 0), colorArr);

@@ -78,6 +78,18 @@ public class OpenRGBZone {
         this.ledsCount = ledsCount;
     }
 
+    public int getMatrixHeight() {
+        return matrixHeight;
+    }
+
+    public int getMatrixWidth() {
+        return matrixWidth;
+    }
+
+    public int[][] getMatrix() {
+        return matrix;
+    }
+
     @Override
     public String toString() {
         return "OpenRGBZone{" +

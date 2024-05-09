@@ -1,4 +1,4 @@
-package me.mfletcher.minergb;
+package me.mfletcher.minergb.util;
 
 import net.minecraft.core.Vec3i;
 
