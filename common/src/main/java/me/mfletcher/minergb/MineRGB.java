@@ -7,7 +7,7 @@ import dev.architectury.event.events.client.ClientTickEvent;
 import io.gitlab.mguimard.openrgb.entity.OpenRGBColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 
@@ -37,7 +37,7 @@ public final class MineRGB {
                     MineRGBClientController.setHealth(player.getHealth(), player.getMaxHealth());
                     MineRGBClientController.setFoodLevel(player.getFoodData().getFoodLevel());
                     MineRGBClientController.setHotbarSlot(player.getInventory().selected);
-                    if(instance.dimensionTypeId().equals(BuiltinDimensionTypes.NETHER) || instance.dimensionTypeId().equals(BuiltinDimensionTypes.END)) {
+                    if(instance.dimensionTypeRegistration().is(DimensionType.NETHER_LOCATION.location()) || instance.dimensionTypeRegistration().is(DimensionType.END_LOCATION.location())) {
                         int color = instance.getBiome(player.blockPosition()).value().getFogColor();
                         MineRGBClientController.setBackgroundColorFromInt(color);
                         MineRGBClientController.updateLeds();
