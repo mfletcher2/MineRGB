@@ -87,5 +87,5 @@ subprojects {
 
 forgix {
     group = "me.mfletcher.minergb"
-    mergedJarName = "minergb"
+    mergedJarName = "minergb-${rootProject.mod_version}.jar"
 }
