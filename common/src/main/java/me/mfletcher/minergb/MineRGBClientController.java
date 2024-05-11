@@ -18,6 +18,7 @@ public class MineRGBClientController {
     private static final OpenRGBClient CLIENT = new OpenRGBClient("127.0.0.1", 6742, "MineRGB");
     private static final List<Map<String, Integer>> KEY_MAP = new ArrayList<>();
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final List<Integer> INITIAL_MODES = new ArrayList<>();
     private static final List<OpenRGBColor[]> BACKGROUND_COLOR_CACHE = new ArrayList<>();
     private static final List<OpenRGBColor[]> HURT_COLOR_CACHE = new ArrayList<>();
     private static final List<OpenRGBColor[]> XP_COLOR_CACHE = new ArrayList<>();
@@ -40,6 +41,7 @@ public class MineRGBClientController {
             for (int i = 0; i < controllerCount; i++) {
                 OpenRGBDevice controller = CLIENT.getDeviceController(i);
                 DEVICES_CACHE.add(controller);
+                INITIAL_MODES.add(controller.getActiveMode());
 
                 LOGGER.info("Found OpenRGB-compatible {}: {}", controller.getType().getName(), controller.getName());
                 List<OpenRGBLed> leds = controller.getLeds();
@@ -72,6 +74,16 @@ public class MineRGBClientController {
                 CLIENT.updateLeds(i, openRGBColors);
 
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void terminate() {
+        try {
+            for (int i = 0; i < DEVICES_CACHE.size(); i++)
+                CLIENT.updateMode(i, INITIAL_MODES.get(i), DEVICES_CACHE.get(i).getModes().get(INITIAL_MODES.get(i)));
+            CLIENT.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
         }
