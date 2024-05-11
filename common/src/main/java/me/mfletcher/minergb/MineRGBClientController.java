@@ -96,8 +96,6 @@ public class MineRGBClientController {
             if (isHurt) colors = HURT_COLOR_CACHE.get(i).clone();
             else if (collectedXp) colors = XP_COLOR_CACHE.get(i).clone();
             else colors = BACKGROUND_COLOR_CACHE.get(i).clone();
-            isHurt = false;
-            collectedXp = false;
             if (device.getType() == DeviceType.DEVICE_TYPE_KEYBOARD) {
                 setKeyColor(Integer.toString(hotbarSlot + 1), KEY_MAP.get(i), new OpenRGBColor(127, 127, 127), colors);
                 setHealthColors(KEY_MAP.get(i), colors);
@@ -105,6 +103,8 @@ public class MineRGBClientController {
             }
             updateLeds(i, colors);
         }
+        isHurt = false;
+        collectedXp = false;
     }
 
     public static void updateLeds(int deviceIndex, OpenRGBColor[] colors) {
