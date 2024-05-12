@@ -21,9 +21,7 @@ public final class MineRGB {
         // Write common init code here.
         ClientLifecycleEvent.CLIENT_STARTED.register(instance -> MineRGBClientController.init());
 
-        ClientLifecycleEvent.CLIENT_STOPPING.register(instance -> {
-            MineRGBClientController.terminate();
-        });
+        ClientLifecycleEvent.CLIENT_STOPPING.register(instance -> MineRGBClientController.terminate());
 
         ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((player) -> {
             MineRGBClientController.setHotbarSlot(player.getInventory().selected);
