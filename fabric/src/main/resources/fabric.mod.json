@@ -17,10 +17,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "me.mfletcher.minergb.fabric.MineRGB"
+      "me.mfletcher.minergb.fabric.MineRGBFabric"
     ],
     "client": [
-      "me.mfletcher.minergb.fabric.client.ExampleModFabricClient"
+      "me.mfletcher.minergb.fabric.client.MineRGBFabricClient"
     ]
   },
   "mixins": [

@@ -1,4 +1,4 @@
-package com.example.neoforge;
+package me.mfletcher.minergb.neoforge;
 
 import me.mfletcher.minergb.MineRGB;
 import net.neoforged.fml.common.Mod;
