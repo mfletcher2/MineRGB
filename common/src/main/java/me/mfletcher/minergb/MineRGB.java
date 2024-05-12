@@ -35,6 +35,8 @@ public final class MineRGB {
             MineRGBClientController.setHealth(newPlayer.getHealth(), newPlayer.getMaxHealth());
         });
 
+        ClientPlayerEvent.CLIENT_PLAYER_QUIT.register((player) -> MineRGBClientController.clearLEDs());
+
         ClientTickEvent.CLIENT_LEVEL_POST.register(instance -> {
             Player player = Minecraft.getInstance().player;
             if (player != null && player.tickCount % 2 == 0 && player.isAlive()) {

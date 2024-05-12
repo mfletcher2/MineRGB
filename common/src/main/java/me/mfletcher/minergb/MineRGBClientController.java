@@ -151,6 +151,14 @@ public class MineRGBClientController {
         setBackgroundColor(rgbColor);
     }
 
+    public static void clearLEDs() {
+        for (int i = 0; i < DEVICES_CACHE.size(); i++) {
+            OpenRGBColor[] colors = new OpenRGBColor[DEVICES_CACHE.get(i).getLeds().size()];
+            Arrays.fill(colors, new OpenRGBColor(0, 0, 0));
+            updateLeds(i, colors);
+        }
+    }
+
     public static void setHotbarSlot(int slot) {
         hotbarSlot = slot;
     }
