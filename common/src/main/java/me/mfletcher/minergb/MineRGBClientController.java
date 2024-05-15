@@ -40,12 +40,12 @@ public class MineRGBClientController {
 
             for (int i = 0; i < controllerCount; i++) {
                 OpenRGBDevice controller = CLIENT.getDeviceController(i);
+                List<OpenRGBLed> leds = controller.getLeds();
+
                 DEVICES_CACHE.add(controller);
                 INITIAL_MODES.add(controller.getActiveMode());
 
-                LOGGER.info("Found OpenRGB-compatible {}: {}", controller.getType().getName(), controller.getName());
-                List<OpenRGBLed> leds = controller.getLeds();
-                LOGGER.info("Found {} LEDs on this device", leds.size());
+                LOGGER.info("Found OpenRGB-compatible {}: {} with {} LEDs", controller.getType().getName(), controller.getName(), leds.size());
                 BACKGROUND_COLOR_CACHE.add(new OpenRGBColor[leds.size()]);
                 HURT_COLOR_CACHE.add(new OpenRGBColor[leds.size()]);
                 XP_COLOR_CACHE.add(new OpenRGBColor[leds.size()]);
@@ -53,12 +53,12 @@ public class MineRGBClientController {
                 Arrays.fill(HURT_COLOR_CACHE.get(i), new OpenRGBColor(127, 0, 0));
                 Arrays.fill(XP_COLOR_CACHE.get(i), OpenRGBColor.fromHexaString("#9ad26c"));
 
-                CLIENT.updateMode(i, 0, controller.getModes().get(0));
+                CLIENT.updateMode(i, 0, controller.getModes().getFirst());
 
                 OpenRGBColor[] openRGBColors = new OpenRGBColor[leds.size()];
                 Arrays.fill(openRGBColors, new OpenRGBColor(0, 0, 0));
 
-                if (controller.getType() == DeviceType.DEVICE_TYPE_KEYBOARD) {
+                if (controller.getType() == DeviceType.DEVICE_TYPE_KEYBOARD && leds.getFirst().getName().startsWith("Key: ")) {
                     Map<String, Integer> keyMap = new HashMap<>();
                     for (int j = 0; j < leds.size(); j++) {
                         String name = leds.get(j).getName();
@@ -83,7 +83,7 @@ public class MineRGBClientController {
         try {
             for (int i = 0; i < DEVICES_CACHE.size(); i++)
                 CLIENT.updateMode(i, INITIAL_MODES.get(i), DEVICES_CACHE.get(i).getModes().get(INITIAL_MODES.get(i)));
-            CLIENT.disconnect();
+//            CLIENT.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,12 +91,11 @@ public class MineRGBClientController {
 
     public static void updateLeds() {
         for (int i = 0; i < DEVICES_CACHE.size(); i++) {
-            OpenRGBDevice device = DEVICES_CACHE.get(i);
             OpenRGBColor[] colors;
             if (isHurt) colors = HURT_COLOR_CACHE.get(i).clone();
             else if (collectedXp) colors = XP_COLOR_CACHE.get(i).clone();
             else colors = BACKGROUND_COLOR_CACHE.get(i).clone();
-            if (device.getType() == DeviceType.DEVICE_TYPE_KEYBOARD) {
+            if (KEY_MAP.get(i) != null) {
                 setKeyColor(Integer.toString(hotbarSlot + 1), KEY_MAP.get(i), new OpenRGBColor(127, 127, 127), colors);
                 setHealthColors(KEY_MAP.get(i), colors);
                 setFoodColors(KEY_MAP.get(i), colors);
@@ -118,8 +117,8 @@ public class MineRGBClientController {
     public static void updateLoading(int progress /* out of 100 */) {
         for (int i = 0; i < DEVICES_CACHE.size(); i++) {
             OpenRGBDevice device = DEVICES_CACHE.get(i);
-            if (device.getZones().get(0).getMatrixWidth() == 0) return;
-            int[][] matrix = device.getZones().get(0).getMatrix();
+            if (device.getZones().getFirst().getMatrixWidth() == 0) return;
+            int[][] matrix = device.getZones().getFirst().getMatrix();
             OpenRGBColor[] colors = new OpenRGBColor[device.getLeds().size()];
             progress = (int) Math.round(progress / 100.0 * matrix[0].length);
             for (int j = 0; j < matrix[0].length; j++) {
