@@ -7,6 +7,7 @@ import io.gitlab.mguimard.openrgb.entity.OpenRGBColor;
 import io.gitlab.mguimard.openrgb.entity.OpenRGBDevice;
 import io.gitlab.mguimard.openrgb.entity.OpenRGBLed;
 import me.mfletcher.minergb.util.BitUtils;
+import me.shedaniel.autoconfig.AutoConfig;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3i;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ public class MineRGBClientController {
     private static final List<OpenRGBColor[]> XP_COLOR_CACHE = new ArrayList<>();
     private static final List<OpenRGBDevice> DEVICES_CACHE = new ArrayList<>();
 
+    private static ModConfig config;
     private static int hotbarSlot = 0;
     private static double healthRatio = 1.0;
     private static double foodLevelRatio = 1.0;
@@ -32,6 +34,7 @@ public class MineRGBClientController {
 
     public static void init() {
         try {
+            config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
             LOGGER.info("Attempting to find OpenRGB compatible devices");
 
             CLIENT.connect();
@@ -53,7 +56,7 @@ public class MineRGBClientController {
                 Arrays.fill(HURT_COLOR_CACHE.get(i), new OpenRGBColor(127, 0, 0));
                 Arrays.fill(XP_COLOR_CACHE.get(i), OpenRGBColor.fromHexaString("#9ad26c"));
 
-                CLIENT.updateMode(i, 0, controller.getModes().getFirst());
+                updateMode(i, 0);
 
                 OpenRGBColor[] openRGBColors = new OpenRGBColor[leds.size()];
                 Arrays.fill(openRGBColors, new OpenRGBColor(0, 0, 0));
@@ -71,7 +74,7 @@ public class MineRGBClientController {
                 } else
                     KEY_MAP.add(null);
 
-                CLIENT.updateLeds(i, openRGBColors);
+                updateLeds(i, openRGBColors);
 
             }
         } catch (IOException e) {
@@ -80,20 +83,16 @@ public class MineRGBClientController {
     }
 
     public static void terminate() {
-        try {
-            for (int i = 0; i < DEVICES_CACHE.size(); i++)
-                CLIENT.updateMode(i, INITIAL_MODES.get(i), DEVICES_CACHE.get(i).getModes().get(INITIAL_MODES.get(i)));
-//            CLIENT.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        for (int i = 0; i < DEVICES_CACHE.size(); i++)
+            updateMode(i, INITIAL_MODES.get(i));
+//          CLIENT.disconnect();
     }
 
     public static void updateLeds() {
         for (int i = 0; i < DEVICES_CACHE.size(); i++) {
             OpenRGBColor[] colors;
-            if (isHurt) colors = HURT_COLOR_CACHE.get(i).clone();
-            else if (collectedXp) colors = XP_COLOR_CACHE.get(i).clone();
+            if (isHurt && config.damageFlash) colors = HURT_COLOR_CACHE.get(i).clone();
+            else if (collectedXp && config.xpFlash) colors = XP_COLOR_CACHE.get(i).clone();
             else colors = BACKGROUND_COLOR_CACHE.get(i).clone();
             if (KEY_MAP.get(i) != null) {
                 setKeyColor(Integer.toString(hotbarSlot + 1), KEY_MAP.get(i), new OpenRGBColor(127, 127, 127), colors);
@@ -108,7 +107,9 @@ public class MineRGBClientController {
 
     public static void updateLeds(int deviceIndex, OpenRGBColor[] colors) {
         try {
-            CLIENT.updateLeds(deviceIndex, colors);
+            String deviceName = DEVICES_CACHE.get(deviceIndex).getName();
+            if (!config.disabledDevices.contains(deviceName.substring(0, deviceName.length() - 1)))
+                CLIENT.updateLeds(deviceIndex, colors);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -218,5 +219,15 @@ public class MineRGBClientController {
                 setKeyColor("F" + (13 - i), keyMap, OpenRGBColor.fromHexaString("#75481b"), colorArr);
             else
                 setKeyColor("F" + (13 - i), keyMap, new OpenRGBColor(0, 0, 0), colorArr);
+    }
+
+    private static void updateMode(int deviceIndex, int modeIndex) {
+        try {
+            String deviceName = DEVICES_CACHE.get(deviceIndex).getName();
+            if (!config.disabledDevices.contains(deviceName.substring(0, deviceName.length() - 1)))
+                CLIENT.updateMode(deviceIndex, modeIndex, DEVICES_CACHE.get(deviceIndex).getModes().get(modeIndex));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
