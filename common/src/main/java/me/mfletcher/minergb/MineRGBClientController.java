@@ -117,7 +117,7 @@ public class MineRGBClientController {
     public static void updateLoading(int progress /* out of 100 */) {
         for (int i = 0; i < DEVICES_CACHE.size(); i++) {
             OpenRGBDevice device = DEVICES_CACHE.get(i);
-            if (device.getZones().getFirst().getMatrixWidth() == 0) return;
+            if (device.getZones().getFirst().getMatrixWidth() == 0) continue;
             int[][] matrix = device.getZones().getFirst().getMatrix();
             OpenRGBColor[] colors = new OpenRGBColor[device.getLeds().size()];
             progress = (int) Math.round(progress / 100.0 * matrix[0].length);
