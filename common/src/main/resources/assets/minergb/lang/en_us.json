@@ -1,0 +1,7 @@
+{
+  "text.autoconfig.minergb.title": "MineRGB",
+  "text.autoconfig.minergb.option.disabledDevices": "Disabled Devices",
+  "text.autoconfig.minergb.option.disabledDevices.@Tooltip": "Enter the full name of each device you want to disable on a separate line.",
+  "text.autoconfig.minergb.option.damageFlash": "Damage Flash",
+  "text.autoconfig.minergb.option.xpFlash": "XP Flash"
+}
