@@ -5,6 +5,8 @@ import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import io.gitlab.mguimard.openrgb.entity.OpenRGBColor;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
@@ -14,10 +16,11 @@ import org.slf4j.Logger;
 
 public final class MineRGB {
     public static final String MOD_ID = "minergb";
-    private static final Logger LOGGER = LogUtils.getLogger();
 
     public static void init() {
         // Write common init code here.
+        AutoConfig.register(ModConfig.class, GsonConfigSerializer::new);
+
         ClientLifecycleEvent.CLIENT_STARTED.register(instance -> MineRGBClientController.init());
 
         ClientLifecycleEvent.CLIENT_STOPPING.register(instance -> {

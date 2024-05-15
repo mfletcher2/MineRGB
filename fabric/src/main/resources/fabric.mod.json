@@ -21,6 +21,9 @@
     ],
     "client": [
       "me.mfletcher.minergb.fabric.client.ExampleModFabricClient"
+    ],
+    "modmenu": [
+      "me.mfletcher.minergb.fabric.ModMenuIntegration"
     ]
   },
   "mixins": [
