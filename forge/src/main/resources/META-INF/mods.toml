@@ -11,7 +11,7 @@ authors = "mfletcher"
 description = '''
 OpenRGB integration for Minecraft
 '''
-logoFile = "assets/minergb/icon.png"
+#logoFile = "assets/minergb/icon.png"
 displayURL = "https://github.com/mfletcher2/MineRGB"
 
 [[dependencies.minergb]]
