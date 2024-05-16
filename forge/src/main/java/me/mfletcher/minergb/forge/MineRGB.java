@@ -3,7 +3,7 @@ package me.mfletcher.minergb.forge;
 import dev.architectury.platform.forge.EventBuses;
 import me.mfletcher.minergb.ModConfig;
 import me.shedaniel.autoconfig.AutoConfig;
-import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -17,7 +17,7 @@ public final class MineRGB {
         // Run our common setup.
         me.mfletcher.minergb.MineRGB.init();
 
-        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((client, parent) ->
+        ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class, () -> new ConfigGuiHandler.ConfigGuiFactory((client, parent) ->
                 AutoConfig.getConfigScreen(ModConfig.class, parent).get()));
     }
 }
