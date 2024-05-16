@@ -7,7 +7,7 @@
     "InventoryMixin",
     "LevelLoadingScreenMixin",
     "MinecraftMixin",
-    "PlayerMixin"
+    "LocalPlayerMixin"
   ],
   "mixins": [
   ],
