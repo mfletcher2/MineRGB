@@ -34,3 +34,8 @@ type = "required"
 versionRange = "[12.0.26,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.minergb]]
+modId = "cloth_config"
+type = "required"
+versionRange = "[*,)"
