@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class MineRGBClientController {
-    private static final OpenRGBClient CLIENT = new OpenRGBClient("127.0.0.1", 6742, "MineRGB");
     private static final List<Map<String, Integer>> KEY_MAP = new ArrayList<>();
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final List<Integer> INITIAL_MODES = new ArrayList<>();
@@ -26,6 +25,7 @@ public class MineRGBClientController {
     private static final List<OpenRGBDevice> DEVICES_CACHE = new ArrayList<>();
 
     private static ModConfig config;
+    private static OpenRGBClient client;
     private static int hotbarSlot = 0;
     private static double healthRatio = 1.0;
     private static double foodLevelRatio = 1.0;
@@ -37,12 +37,13 @@ public class MineRGBClientController {
             config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
             LOGGER.info("Attempting to find OpenRGB compatible devices");
 
-            CLIENT.connect();
+            client = new OpenRGBClient(config.openRGBHost, config.openRGBPort, "MineRGB");
+            client.connect();
 
-            int controllerCount = CLIENT.getControllerCount();
+            int controllerCount = client.getControllerCount();
 
             for (int i = 0; i < controllerCount; i++) {
-                OpenRGBDevice controller = CLIENT.getDeviceController(i);
+                OpenRGBDevice controller = client.getDeviceController(i);
                 List<OpenRGBLed> leds = controller.getLeds();
 
                 DEVICES_CACHE.add(controller);
@@ -109,7 +110,7 @@ public class MineRGBClientController {
         try {
             String deviceName = DEVICES_CACHE.get(deviceIndex).getName();
             if (!config.disabledDevices.contains(deviceName.substring(0, deviceName.length() - 1)))
-                CLIENT.updateLeds(deviceIndex, colors);
+                client.updateLeds(deviceIndex, colors);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -225,7 +226,7 @@ public class MineRGBClientController {
         try {
             String deviceName = DEVICES_CACHE.get(deviceIndex).getName();
             if (!config.disabledDevices.contains(deviceName.substring(0, deviceName.length() - 1)))
-                CLIENT.updateMode(deviceIndex, modeIndex, DEVICES_CACHE.get(deviceIndex).getModes().get(modeIndex));
+                client.updateMode(deviceIndex, modeIndex, DEVICES_CACHE.get(deviceIndex).getModes().get(modeIndex));
         } catch (IOException e) {
             e.printStackTrace();
         }
