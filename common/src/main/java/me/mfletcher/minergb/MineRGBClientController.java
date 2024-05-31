@@ -62,7 +62,7 @@ public class MineRGBClientController {
                 OpenRGBColor[] openRGBColors = new OpenRGBColor[leds.size()];
                 Arrays.fill(openRGBColors, new OpenRGBColor(0, 0, 0));
 
-                if (controller.getType() == DeviceType.DEVICE_TYPE_KEYBOARD && leds.getFirst().getName().startsWith("Key: ")) {
+                if (controller.getType() == DeviceType.DEVICE_TYPE_KEYBOARD && leds.get(0).getName().startsWith("Key: ")) {
                     Map<String, Integer> keyMap = new HashMap<>();
                     for (int j = 0; j < leds.size(); j++) {
                         String name = leds.get(j).getName();
@@ -119,8 +119,8 @@ public class MineRGBClientController {
     public static void updateLoading(int progress /* out of 100 */) {
         for (int i = 0; i < DEVICES_CACHE.size(); i++) {
             OpenRGBDevice device = DEVICES_CACHE.get(i);
-            if (device.getZones().getFirst().getMatrixWidth() == 0) continue;
-            int[][] matrix = device.getZones().getFirst().getMatrix();
+            if (device.getZones().get(0).getMatrixWidth() == 0) continue;
+            int[][] matrix = device.getZones().get(0).getMatrix();
             OpenRGBColor[] colors = new OpenRGBColor[device.getLeds().size()];
             progress = (int) Math.round(progress / 100.0 * matrix[0].length);
             for (int j = 0; j < matrix[0].length; j++) {
